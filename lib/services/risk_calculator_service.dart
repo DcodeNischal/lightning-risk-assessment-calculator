@@ -82,7 +82,7 @@ class RiskCalculatorService {
       calculateALP(z) *
       getFactor(installationFactorCI, z.installationPowerLine, 1.0) *
       getFactor(environmentalFactorCE, z.environmentalFactorKey, 1.0) *
-      getFactor(lineTypeFactorCT, z.powerTypeCT, 1.0) *
+      getFactor(lineTypeFactorCT, z.lineTypePowerLine, 1.0) *
       1e-6;
 
   /// Number of dangerous events due to flashes to telecom line
@@ -92,7 +92,7 @@ class RiskCalculatorService {
       calculateALT(z) *
       getFactor(installationFactorCI, z.installationTlcLine, 1.0) *
       getFactor(environmentalFactorCE, z.environmentalFactorKey, 1.0) *
-      getFactor(lineTypeFactorCT, z.teleTypeCT, 1.0) *
+      getFactor(lineTypeFactorCT, z.lineTypeTlcLine, 1.0) *
       1e-6;
 
   /// Number of dangerous events due to flashes near power line
@@ -104,7 +104,7 @@ class RiskCalculatorService {
         calculateAIP(z) *
         getFactor(installationFactorCI, z.installationPowerLine, 1.0) *
         getFactor(environmentalFactorCE, z.environmentalFactorKey, 1.0) *
-        getFactor(lineTypeFactorCT, z.powerTypeCT, 1.0) *
+        getFactor(lineTypeFactorCT, z.lineTypePowerLine, 1.0) *
         1e-6;
   }
 
@@ -117,7 +117,7 @@ class RiskCalculatorService {
         calculateAIT(z) *
         getFactor(installationFactorCI, z.installationTlcLine, 1.0) *
         getFactor(environmentalFactorCE, z.environmentalFactorKey, 1.0) *
-        getFactor(lineTypeFactorCT, z.teleTypeCT, 1.0) *
+        getFactor(lineTypeFactorCT, z.lineTypeTlcLine, 1.0) *
         1e-6;
   }
 
@@ -127,7 +127,7 @@ class RiskCalculatorService {
       z.lightningFlashDensity *
       calculateADJ(z) *
       getFactor(locationFactorCDJ, z.adjLocationFactor, 1.0) *
-      getFactor(lineTypeFactorCT, z.powerTypeCT, 1.0) *
+      getFactor(lineTypeFactorCT, z.lineTypePowerLine, 1.0) *
       1e-6;
 
   /// Number of dangerous events due to flashes to adjacent structure (Telecom)
@@ -136,7 +136,7 @@ class RiskCalculatorService {
       z.lightningFlashDensity *
       calculateADJ(z) *
       getFactor(locationFactorCDJ, z.adjLocationFactor, 1.0) *
-      getFactor(lineTypeFactorCT, z.teleTypeCT, 1.0) *
+      getFactor(lineTypeFactorCT, z.lineTypeTlcLine, 1.0) *
       1e-6;
 
   // ============================================================================

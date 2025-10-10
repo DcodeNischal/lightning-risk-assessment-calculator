@@ -41,6 +41,18 @@ class ZoneParameters {
   final String fireProtection;
   final String fireRisk;
 
+  // Additional fields to support full PDF blocks
+  final String totalCostOfStructure; // e.g., Medium Scale Industry
+  final String economicValue; // optional free text/value
+  final String isAnyEconomicValue; // Yes/No
+  final String isAnyValueofAnimals; // Yes/No
+  final String coValue; // Yes/No or text
+  final int culturalHeritageZ0; // percent
+  final int totalValueBuilding; // percent
+  final String lifeSupportDevice; // Yes/No
+  final bool powerLinePresent; // derived or explicit flag
+  final bool telecomPresent; // derived or explicit flag
+
   ZoneParameters({
     required this.length,
     required this.width,
@@ -83,6 +95,16 @@ class ZoneParameters {
     required this.shockProtectionPTU,
     required this.fireProtection,
     required this.fireRisk,
+    this.totalCostOfStructure = 'Medium Scale Industry',
+    this.economicValue = '',
+    this.isAnyEconomicValue = 'No',
+    this.isAnyValueofAnimals = 'No',
+    this.coValue = 'No',
+    this.culturalHeritageZ0 = 10,
+    this.totalValueBuilding = 100,
+    this.lifeSupportDevice = 'No',
+    this.powerLinePresent = true,
+    this.telecomPresent = true,
   });
 
   factory ZoneParameters.fromMap(Map<String, dynamic> map) {
@@ -129,6 +151,17 @@ class ZoneParameters {
       shockProtectionPTU: map['shockProtectionPTU'] ?? '',
       fireProtection: map['fireProtection'] ?? 'No measures',
       fireRisk: map['fireRisk'] ?? 'Fire (Ordinary)',
+      totalCostOfStructure:
+          map['totalCostOfStructure'] ?? 'Medium Scale Industry',
+      economicValue: map['economicValue'] ?? '',
+      isAnyEconomicValue: map['isAnyEconomicValue'] ?? 'No',
+      isAnyValueofAnimals: map['isAnyValueofAnimals'] ?? 'No',
+      coValue: map['coValue'] ?? 'No',
+      culturalHeritageZ0: map['culturalHeritageZ0']?.toInt() ?? 10,
+      totalValueBuilding: map['totalValueBuilding']?.toInt() ?? 100,
+      lifeSupportDevice: map['lifeSupportDevice'] ?? 'No',
+      powerLinePresent: map['powerLinePresent'] ?? true,
+      telecomPresent: map['telecomPresent'] ?? true,
     );
   }
 
@@ -174,6 +207,16 @@ class ZoneParameters {
       'shockProtectionPTU': shockProtectionPTU,
       'fireProtection': fireProtection,
       'fireRisk': fireRisk,
+      'totalCostOfStructure': totalCostOfStructure,
+      'economicValue': economicValue,
+      'isAnyEconomicValue': isAnyEconomicValue,
+      'isAnyValueofAnimals': isAnyValueofAnimals,
+      'coValue': coValue,
+      'culturalHeritageZ0': culturalHeritageZ0,
+      'totalValueBuilding': totalValueBuilding,
+      'lifeSupportDevice': lifeSupportDevice,
+      'powerLinePresent': powerLinePresent,
+      'telecomPresent': telecomPresent,
     };
   }
 }

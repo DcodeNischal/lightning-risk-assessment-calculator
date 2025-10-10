@@ -307,6 +307,9 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                   const SizedBox(height: 16),
                   _buildDropdownField('Shielding', 'powerShielding',
                       Icons.shield_outlined, lineShieldingCLD.keys.toList()),
+                  const SizedBox(height: 16),
+                  _buildNumberField('Conductor Spacing (m)', 'spacingPowerLine',
+                      Icons.swap_horiz),
                 ],
               ),
 
@@ -360,6 +363,9 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                   const SizedBox(height: 16),
                   _buildDropdownField('Shielding', 'tlcShielding',
                       Icons.shield_outlined, lineShieldingCLD.keys.toList()),
+                  const SizedBox(height: 16),
+                  _buildNumberField('Conductor Spacing (m)', 'spacingTlcLine',
+                      Icons.swap_horiz),
                 ],
               ),
 
@@ -401,6 +407,9 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                       }
                     },
                   ),
+                  const SizedBox(height: 16),
+                  _buildNumberField(
+                      'Total Persons', 'totalPersonsNT', Icons.people_alt),
                   const SizedBox(height: 16),
                   _buildDropdownField(
                       'Shock Protection PTA',

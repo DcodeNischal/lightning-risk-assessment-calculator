@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/risk_result.dart';
 import '../models/zone_parameters.dart';
-import '../services/modern_pdf_service.dart';
+import '../services/modern_pdf_service.dart' as report;
 
 class ModernResultsDisplay extends StatefulWidget {
   final RiskResult riskResult;
@@ -26,7 +26,7 @@ class _ModernResultsDisplayState extends State<ModernResultsDisplay> {
     });
 
     try {
-      final pdfService = ModernPDFService();
+      final pdfService = report.ModernPDFService();
       await pdfService.generateModernReport(
           widget.riskResult, widget.zoneParameters);
 
