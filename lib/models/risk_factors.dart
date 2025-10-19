@@ -192,6 +192,14 @@ const Map<String, double> reductionFactorRT = {
   'Asphalt, linoleum, wood': 0.00001,
 };
 
+// Floor surface type RT (same as reductionFactorRT but with different key names)
+const Map<String, double> floorSurfaceTypeRT = {
+  'Agricultural, concrete': 0.01,
+  'Asphalt, linoleum, wood/marble,ceramic': 0.00001,
+  'Gravel, moquette, carpets': 0.0001,
+  'Asphalt, linoleum, wood': 0.00001,
+};
+
 // Factor reducing the measures taken to reduce the consequences of fire rp
 const Map<String, double> fireProtectionRP = {
   'No measures': 1.0,
@@ -219,8 +227,27 @@ const Map<String, double> panicFactorHZ = {
   'High risk of panic (more than 1000 persons)': 10.0,
 };
 
+// Panic risk HZ (same as panicFactorHZ but with different key names)
+const Map<String, double> panicRiskHZ = {
+  'No special risk': 1.0,
+  'Low risk of panic(100 persons)': 2.0,
+  'Average level of panic (100 to 1000 persons)': 5.0,
+  'Difficulty of evacuation (immobile persons, hospitals)': 5.0,
+  'High risk of panic (more than 1000 persons)': 10.0,
+};
+
 // Type of Loss L1: Typical mean values for LT
 const Map<String, double> lossTypeLT = {
+  'All types': 0.01,
+  'Risk of Explosion': 0.1,
+  'Hospital, Hotel, School, Public Building': 0.1,
+  'Entertainment Facility, Church, Museum': 0.05,
+  'Industrial structure, economically used plant': 0.02,
+  'Others': 0.01,
+};
+
+// Loss of Human Life LT (same as lossTypeLT but with different key names)
+const Map<String, double> lossOfHumanLifeLT = {
   'All types': 0.01,
   'Risk of Explosion': 0.1,
   'Hospital, Hotel, School, Public Building': 0.1,
@@ -238,10 +265,27 @@ const Map<String, double> lossTypePhysicalLF = {
   'Risk of Explosion': 0.1,
 };
 
+// Loss of Human Life LF (same as lossTypePhysicalLF but with different key names)
+const Map<String, double> lossOfHumanLifeLF = {
+  'Hospital, Hotel, School, Public Building': 0.1,
+  'Entertainment Facility, Church, Museum': 0.05,
+  'Industrial structure, economically used plant': 0.02,
+  'Others': 0.01,
+  'Risk of Explosion': 0.1,
+};
+
 // Type of Loss L1: Typical mean values for LO
 const Map<String, double> lossTypeSystemLO = {
   'Risk of Explosion': 0.1,
   'I.C.U. and Operation Theatre of a hospital': 0.01,
+  'Others': 0.001,
+};
+
+// Loss of Human Life LO (same as lossTypeSystemLO but with different key names)
+const Map<String, double> lossOfHumanLifeLO = {
+  'Risk of Explosion': 0.1,
+  'I.C.U. and Operation Theatre of a hospital': 0.01,
+  'LO(Others)': 0.001,
   'Others': 0.001,
 };
 
