@@ -130,7 +130,7 @@ class ModernPDFService {
               verticalAlignment: pw.TableCellVerticalAlignment.top,
               children: [
                 _buildZone0ParametersColumn(zoneParams),
-                _buildRequiredProtectionColumn(zoneParams),
+                _buildRequiredProtectionColumn(riskResult, zoneParams),
                 _buildRiskAfterProtectionColumn(riskResult),
               ],
             ),
@@ -150,24 +150,25 @@ class ModernPDFService {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildParamRow(
-              'Length of the structure (m)', 'L', zoneParams.length.toString()),
+              'Length of structure (m)', 'L', zoneParams.length.toString()),
           _buildParamRow(
               'Width of the structure (m)', 'W', zoneParams.width.toString()),
           _buildParamRow('Height of the structure (m)*', 'H',
               zoneParams.height.toString()),
-          _buildParamRow('*Highest part measured from the ground level', '', '',
+          _buildParamRow(
+              '*highest point measured from the ground level', '', '',
               isNote: true),
           _buildParamRow('Is it a Complex Structure ?', '', 'No'),
-          _buildParamRow('Collection Area (m²)', 'Ad',
+          _buildParamRow('Collection Area (m²)', 'AD',
               (riskResult.collectionAreas['AD'] ?? 0).toStringAsFixed(2)),
           _buildSectionDivider('Adjacent Structure Dimensions (If Any)'),
-          _buildParamRow('Adjacent Structure Length (m)', '',
+          _buildParamRow('Adjacent Structure Length (m)', 'LDJ',
               zoneParams.adjLength.toString()),
-          _buildParamRow('Adjacent Structure Breadth (m)', '',
+          _buildParamRow('Adjacent Structure Breadth (m)', 'WDJ',
               zoneParams.adjWidth.toString()),
-          _buildParamRow('Adjacent Structure Height (m)', '',
+          _buildParamRow('Adjacent Structure Height (m)', 'HDJ',
               zoneParams.adjHeight.toString()),
-          _buildParamRow('Collection Area of Adjacent\nStructure', '', 'N/A'),
+          _buildParamRow('Collection Area of Adjacent Structure', 'ADJ', 'N/A'),
         ],
       ),
     );
@@ -179,83 +180,96 @@ class ModernPDFService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildParamRow('Location Factor', 'Cd', zoneParams.locationFactorKey),
-          _buildParamRow('Ng(per year/km²)', '',
-              '2'), // Assuming a value, replace with zoneParams.ng
-          _buildParamRow('LPS Status', 'Pb', zoneParams.lpsStatus),
+          _buildParamRow('Location Factor', 'CD', zoneParams.locationFactorKey),
+          _buildParamRow('Lightning Flash Density', 'NG',
+              zoneParams.lightningFlashDensity.toString()),
+          _buildParamRow('LPS Status', 'PB', zoneParams.lpsStatus),
+          _buildParamRow('Mesh width', 'wm1', zoneParams.meshWidth1.toString()),
           _buildParamRow(
-              'Mesh width Wm(m)', '', '0'), // Added Wm(m) for clarity
-          _buildParamRow(
-              'Internal Shield width Wiz', '', '0'), // Added Wiz for clarity
+              'Internal shield width', 'wm2', zoneParams.meshWidth2.toString()),
           _buildParamRow('Shielding Factor Ks1', 'Ks1',
               zoneParams.powerShieldingFactorKs1.toString()),
           _buildParamRow('Shielding Factor Ks2', 'Ks2',
               zoneParams.tlcShieldingFactorKs1.toString()),
-          _buildParamRow('Equipotential\nBonding', 'PDR',
-              zoneParams.equipotentialBonding), // Changed Peb to PDR
-          _buildParamRow('Location Factor of\nAdjacent Structure', 'Cda',
+          _buildParamRow(
+              'Equipotential Bonding', 'PEB', zoneParams.equipotentialBonding),
+          _buildParamRow('Location Factor of Adjacent Structure', 'CDJ',
               zoneParams.adjLocationFactor),
           _buildParamRow(
-              'Does the building\nprovide services to\nthe public ?', '', 'No'),
-          _buildParamRow('Does this building\nhave cultural value ?', '', 'No'),
+              'Does this Building provide services to the public ?', '', 'No'),
+          _buildParamRow('Does this building have cultural value ?', '', 'No'),
         ],
       ),
     );
   }
 
   pw.Widget _buildPowerLineColumn(ZoneParameters zoneParams) {
+    Map<String, dynamic> zone1 = zoneParams.zoneParameters['zone1'] ?? {};
+
     return pw.Padding(
       padding: const pw.EdgeInsets.all(2),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildParamRow(
-              'Length of line', 'Li', zoneParams.lengthPowerLine.toString()),
+              'Length of Line', 'LL', zoneParams.lengthPowerLine.toString()),
           _buildParamRow(
-              'Type of Installation', 'Ct', zoneParams.installationPowerLine),
+              'Type of Installation', 'CI', zoneParams.installationPowerLine),
+          _buildParamRow('Line Type', 'CT', zoneParams.lineTypePowerLine),
           _buildParamRow(
-              'Environmental Factor', 'Ce', zoneParams.environmentalFactorKey),
-          _buildParamRow('Shielding, Earthing &\nCabling', 'Cg',
-              zoneParams.powerShielding), // Changed Insulation to Cabling
-          _buildParamRow('Withstand voltage of\ninternal system', 'Uw',
+              'Environmental Factor', 'CE', zoneParams.environmentalFactorKey),
+          _buildParamRow('Shielding, Earthing & Insulation', 'CLD',
+              zoneParams.powerShielding),
+          _buildParamRow('Shielding, Earthing & Insulation', 'CLI',
+              zoneParams.powerShielding),
+          _buildParamRow('Withstand voltage of internal system', 'UW',
               zoneParams.powerUW.toString()),
+          _buildParamRow('Line Shielding', 'PLD', zoneParams.powerShielding),
           _buildParamRow(
-              'Line Shielding', 'Pw', zoneParams.powerShielding), // Psh to Pw
-          _buildParamRow('Shielding Near Line', 'Pu',
-              zoneParams.spacingPowerLine.toString()), // Pli to Pu
-          _buildParamRow('Impulse withstand\nvoltage (resistibility)', 'Kst',
-              '0.667'), // Ka to Kst, placeholder value
-          _buildParamRow('Internal wiring: Routing\nand Shielding', 'Kp',
-              zoneParams.powerShielding), // Added Kp
+              'Shielding Near Line', 'PLI', zoneParams.powerUW.toString()),
+          _buildParamRow(
+              'Impulse withstand voltage (resistibility)', 'KS4', '0.667'),
+          _buildParamRow(
+              'Internal wiring:  Routing and Shielding',
+              'KS3',
+              zone1['KS3_power']?.toString() ??
+                  'Unshielded Cable - no routing precaution to avoid loops (loop surface 50 m2)'),
         ],
       ),
     );
   }
 
   pw.Widget _buildTelecomLineColumn(ZoneParameters zoneParams) {
+    Map<String, dynamic> zone1 = zoneParams.zoneParameters['zone1'] ?? {};
+
     return pw.Padding(
       padding: const pw.EdgeInsets.all(2),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildParamRow(
-              'Length of line', 'Li', zoneParams.lengthTlcLine.toString()),
+              'Length of Line', 'LL', zoneParams.lengthTlcLine.toString()),
           _buildParamRow(
-              'Type of Installation', 'Ct', zoneParams.installationTlcLine),
+              'Type of Installation', 'CI', zoneParams.installationTlcLine),
+          _buildParamRow('Line Type', 'CT', zoneParams.lineTypeTlcLine),
           _buildParamRow(
-              'Environmental Factor', 'Ce', zoneParams.environmentalFactorKey),
-          _buildParamRow('Shielding, Earthing &\nCabling', 'Cg',
-              zoneParams.tlcShielding), // Changed Insulation to Cabling
-          _buildParamRow('Withstand voltage of\ninternal system', 'Uw',
+              'Environmental Factor', 'CE', zoneParams.environmentalFactorKey),
+          _buildParamRow('Shielding, Earthing & Insulation', 'CLD',
+              zoneParams.tlcShielding),
+          _buildParamRow('Shielding, Earthing & Insulation', 'CLI',
+              zoneParams.tlcShielding),
+          _buildParamRow('Withstand voltage of internal system', 'UW',
               zoneParams.tlcUW.toString()),
+          _buildParamRow('Line Shielding', 'PLD', zoneParams.tlcShielding),
           _buildParamRow(
-              'Line Shielding', 'Pw', zoneParams.tlcShielding), // Psh to Pw
-          _buildParamRow('Shielding Near Line', 'Pu',
-              zoneParams.spacingTlcLine.toString()), // Pli to Pu
-          _buildParamRow('Impulse withstand\nvoltage (resistibility)', 'Kst',
-              '0.667'), // Ka to Kst, placeholder value
-          _buildParamRow('Internal wiring: Routing\nand Shielding', 'Kp',
-              zoneParams.tlcShielding), // Added Kp
+              'Shielding Near Line', 'PLI', zoneParams.tlcUW.toString()),
+          _buildParamRow(
+              'Impulse withstand voltage (resistibility)', 'KS4', '0.667'),
+          _buildParamRow(
+              'Internal wiring:  Routing and Shielding',
+              'KS3',
+              zone1['KS3_telecom']?.toString() ??
+                  'Unshielded Cable - no routing precaution to avoid loops (loop surface 50 m2)'),
         ],
       ),
     );
@@ -267,7 +281,7 @@ class ModernPDFService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildParamRow('Total cost of Structure\n(Building Type)', '',
+          _buildParamRow('Total cost of Structure (Building Type)', '',
               zoneParams.totalCostOfStructure),
           pw.SizedBox(height: 3),
           _buildSectionDivider('Economic Value'),
@@ -279,6 +293,24 @@ class ModernPDFService {
           _buildParamRow('', 'cb', zoneParams.cb),
           _buildParamRow('', 'cc', zoneParams.cc),
           _buildParamRow('', 'cs', zoneParams.cs),
+          pw.SizedBox(height: 3),
+          _buildSectionDivider('Cultural Heritage Value'),
+          _buildParamRow('Value of Cultural Heritage Z0 (in Percent)', 'cZ0',
+              zoneParams.cZ0),
+          _buildParamRow('Value of Cultural Heritage Z1 (in Percent)', 'cZ1',
+              zoneParams.cZ1.toString()),
+          _buildParamRow(
+              'Total Value of Building', 'ct', zoneParams.ct.toString()),
+          pw.SizedBox(height: 3),
+          _buildParamRow('Life support via device ? (Hospital)', '',
+              zoneParams.lifeSupportDevice),
+          _buildParamRow('Animal with economical value (Farm)', '',
+              zoneParams.isAnyValueofAnimals),
+          _buildParamRow('For Hospital', 'X', zoneParams.X.toString()),
+          _buildParamRow('Is Power Line Parameters Present?', '',
+              zoneParams.powerLinePresent ? 'Yes' : 'No'),
+          _buildParamRow('Is Telecommunication Parameters Present?', '',
+              zoneParams.telecomPresent ? 'Yes' : 'No'),
         ],
       ),
     );
@@ -348,8 +380,14 @@ class ModernPDFService {
               zone1['LF1']?.toString() ??
                   'Hospital, Hotel, School, Public Building',
               isSubValue: true),
-          _buildParamRow('People potentially in danger in the zone', 'np',
-              zone1['np']?.toString() ?? '1'),
+          _buildSectionDivider('Calculated Zone 1 Factors'),
+          _buildParamRow('People in danger', 'np',
+              zone1['np']?.toStringAsFixed(4) ?? '1.0'),
+          _buildParamRow('Cultural heritage potential', 'cp',
+              zone1['cp']?.toStringAsFixed(4) ?? '0.9'),
+          _buildParamRow('Structure value potential', 'sp',
+              zone1['sp']?.toStringAsFixed(4) ?? '1.0'),
+          pw.SizedBox(height: 5),
           _buildParamRow('L2 : Loss of Public Service', 'LF2',
               zone1['LF2']?.toString() ?? 'TV, telecommunication(LF)'),
           _buildParamRow('', 'LO2',
@@ -389,19 +427,19 @@ class ModernPDFService {
               'R2',
               riskResult.r2 == 0
                   ? 'No Loss of Public Service'
-                  : riskResult.r2.toString()),
+                  : riskResult.r2.toStringAsExponential(2)),
           _buildParamRow(
               'Loss of Cultural Heritage',
               'R3',
               riskResult.r3 == 0
                   ? 'No Loss of Cultural Heritage Value'
-                  : riskResult.r3.toString()),
+                  : riskResult.r3.toStringAsExponential(2)),
           _buildParamRow(
               'Economic Loss',
               'R4',
               riskResult.r4 == 0
                   ? 'Economic Value Not Evaluated'
-                  : riskResult.r4.toString()),
+                  : riskResult.r4.toStringAsExponential(2)),
         ],
       ),
     );
@@ -457,6 +495,14 @@ class ModernPDFService {
                   'hospital, industrial structure, office building, hotel, economically used plant',
               isSubValue: true),
           pw.SizedBox(height: 10),
+          _buildSectionDivider('Calculated Zone 0 Factors'),
+          _buildParamRow(
+              'People in danger', 'np', zone0['np']?.toStringAsFixed(4) ?? '0'),
+          _buildParamRow('Cultural heritage potential', 'cp',
+              zone0['cp']?.toStringAsFixed(4) ?? '0.1'),
+          _buildParamRow('Structure value potential', 'sp',
+              zone0['sp']?.toStringAsFixed(4) ?? '1.0'),
+          pw.SizedBox(height: 5),
           _buildSectionDivider('Cultural Heritage Value'),
           _buildParamRow('Value of Cultural Heritage Z0 (in Percent)', 'cZ0',
               zoneParams.cZ0),
@@ -479,7 +525,8 @@ class ModernPDFService {
     );
   }
 
-  pw.Widget _buildRequiredProtectionColumn(ZoneParameters zoneParams) {
+  pw.Widget _buildRequiredProtectionColumn(
+      RiskResult riskResult, ZoneParameters zoneParams) {
     // Get Zone 1 parameters for coordinated SPD
     Map<String, dynamic> zone1 = zoneParams.zoneParameters['zone1'] ?? {};
 
@@ -488,15 +535,13 @@ class ModernPDFService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildParamRow('Protection Measure\n(Physical Damage)', 'PB',
+          _buildParamRow('Protection Measure (Physical Damage)', 'PB',
               zoneParams.lpsStatus),
-          _buildParamRow(
-              'Protection Measure\n(Lightning Equipotential Bonding)',
-              'PEB',
-              zoneParams.equipotentialBonding),
-          _buildParamRow('Coordinated Surge\nProtection (Power)', 'PSPD(P)',
+          _buildParamRow('Protection Measure (Lightning Equipotential Bonding)',
+              'PEB', zoneParams.equipotentialBonding),
+          _buildParamRow('Coordinated Surge Protection (Power)', 'PSPD(P)',
               zone1['PSPD_power']?.toString() ?? 'No coordinated SPD system'),
-          _buildParamRow('Coordinated Surge\nProtection (Telecom)', 'PSPD(T)',
+          _buildParamRow('Coordinated Surge Protection (Telecom)', 'PSPD(T)',
               zone1['PSPD_telecom']?.toString() ?? 'No coordinated SPD system'),
         ],
       ),
@@ -510,8 +555,7 @@ class ModernPDFService {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildParamRow('Loss of Human Life', 'R1',
-              riskResult.r1AfterProtection.toStringAsExponential(2),
-              backgroundColor: PdfColors.red100),
+              riskResult.r1AfterProtection.toStringAsExponential(2)),
           _buildParamRow(
               'Loss of Public Service',
               'R2',
@@ -531,29 +575,8 @@ class ModernPDFService {
                   ? 'Economic Value Not Evaluated'
                   : riskResult.r4AfterProtection.toStringAsExponential(2)),
           pw.SizedBox(height: 5),
-          _buildSectionDivider('Annual Savings [ SM = CL - (CPM + CRL) ]'),
-          _buildParamRow('CL (Cost of Loss Before)', '',
-              riskResult.costOfLossBeforeProtection.toStringAsFixed(4)),
-          _buildParamRow('CRL (Cost of Loss After)', '',
-              riskResult.costOfLossAfterProtection.toStringAsFixed(4)),
-          _buildParamRow('CPM (Annual Cost of Protection)', '',
-              riskResult.annualCostOfProtection.toStringAsFixed(4)),
-          _buildParamRow('SM (Annual Savings)', '',
-              riskResult.annualSavings.toStringAsFixed(4),
-              backgroundColor: riskResult.annualSavings > 0
-                  ? PdfColors.green50
-                  : PdfColors.red50),
-          pw.SizedBox(height: 3),
-          _buildSectionDivider('Investment on Protective measure'),
-          _buildParamRow(
-              'Status',
-              '',
-              riskResult.isProtectionEconomical
-                  ? 'Economical'
-                  : 'Not Economical',
-              valueColor: riskResult.isProtectionEconomical
-                  ? PdfColors.green
-                  : PdfColors.red),
+          _buildSectionDivider('Annual Savings [ SM= CL- ( CPM+CRL ) ]'),
+          _buildParamRow('Investment on Protective measures is', '', 'N/A'),
         ],
       ),
     );
