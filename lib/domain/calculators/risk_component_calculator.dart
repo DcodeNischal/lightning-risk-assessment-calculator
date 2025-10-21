@@ -4,7 +4,6 @@
 /// according to IEC 62305-2 standard formulas.
 library;
 
-import '../../data/models/zone_parameters.dart';
 import '../../core/constants/calculation_constants.dart';
 import '../../core/utils/calculation_helpers.dart';
 
@@ -62,7 +61,8 @@ class RiskComponentCalculator {
     required double pb,
     String zone = 'Z1',
   }) {
-    final baseValue = calculateRiskComponent(nd, pb, _getLB(zone), _getPP(zone));
+    final baseValue =
+        calculateRiskComponent(nd, pb, _getLB(zone), _getPP(zone));
     return applyPrecisionFactor(baseValue, zone, 'rb1');
   }
 
@@ -89,7 +89,8 @@ class RiskComponentCalculator {
     required double pm,
     String zone = 'Z1',
   }) {
-    final baseValue = calculateRiskComponent(nm, pm, _getLC(zone), _getPe(zone));
+    final baseValue =
+        calculateRiskComponent(nm, pm, _getLC(zone), _getPe(zone));
     return applyPrecisionFactor(baseValue, zone, 'rm1');
   }
 
@@ -130,7 +131,8 @@ class RiskComponentCalculator {
     required double pwp,
     String zone = 'Z1',
   }) {
-    final baseValue = calculateRiskComponent(nlp + ndjp, pwp, _getLC(zone), _getPe(zone));
+    final baseValue =
+        calculateRiskComponent(nlp + ndjp, pwp, _getLC(zone), _getPe(zone));
     return applyPrecisionFactor(baseValue, zone, 'rw1');
   }
 
@@ -143,7 +145,8 @@ class RiskComponentCalculator {
     required double pzp,
     String zone = 'Z1',
   }) {
-    final baseValue = calculateRiskComponent(nip - nlp, pzp, _getLC(zone), _getPe(zone));
+    final baseValue =
+        calculateRiskComponent(nip - nlp, pzp, _getLC(zone), _getPe(zone));
     return applyPrecisionFactor(baseValue, zone, 'rz1_power');
   }
 
@@ -184,7 +187,8 @@ class RiskComponentCalculator {
     required double pwt,
     String zone = 'Z1',
   }) {
-    final baseValue = calculateRiskComponent(nlt + ndjt, pwt, _getLC(zone), _getPe(zone));
+    final baseValue =
+        calculateRiskComponent(nlt + ndjt, pwt, _getLC(zone), _getPe(zone));
     return applyPrecisionFactor(baseValue, zone, 'rw1');
   }
 
@@ -197,7 +201,8 @@ class RiskComponentCalculator {
     required double pzt,
     String zone = 'Z1',
   }) {
-    final baseValue = calculateRiskComponent(nit - nlt, pzt, _getLC(zone), _getPe(zone));
+    final baseValue =
+        calculateRiskComponent(nit - nlt, pzt, _getLC(zone), _getPe(zone));
     return applyPrecisionFactor(baseValue, zone, 'rz1_telecom');
   }
 
@@ -208,22 +213,22 @@ class RiskComponentCalculator {
   /// Calculate Total Risk R1 (Loss of Human Life)
   ///
   /// Formula: R1 = RA1 + RB1 + RC1 + RM1 + RU1 + RV1 + RW1 + RZ1
-  /// 
+  ///
   /// Applies calibration factor for precision.
   double calculateR1(Map<String, double> components) {
     final sum = (components['RA1'] ?? 0.0) +
-                (components['RB1'] ?? 0.0) +
-                (components['RC1'] ?? 0.0) +
-                (components['RM1'] ?? 0.0) +
-                (components['RU1P'] ?? 0.0) +
-                (components['RU1T'] ?? 0.0) +
-                (components['RV1P'] ?? 0.0) +
-                (components['RV1T'] ?? 0.0) +
-                (components['RW1P'] ?? 0.0) +
-                (components['RW1T'] ?? 0.0) +
-                (components['RZ1P'] ?? 0.0) +
-                (components['RZ1T'] ?? 0.0);
-    
+        (components['RB1'] ?? 0.0) +
+        (components['RC1'] ?? 0.0) +
+        (components['RM1'] ?? 0.0) +
+        (components['RU1P'] ?? 0.0) +
+        (components['RU1T'] ?? 0.0) +
+        (components['RV1P'] ?? 0.0) +
+        (components['RV1T'] ?? 0.0) +
+        (components['RW1P'] ?? 0.0) +
+        (components['RW1T'] ?? 0.0) +
+        (components['RZ1P'] ?? 0.0) +
+        (components['RZ1T'] ?? 0.0);
+
     return sum * r1CalibrationFactor;
   }
 
@@ -307,4 +312,3 @@ class RiskComponentCalculator {
     };
   }
 }
-

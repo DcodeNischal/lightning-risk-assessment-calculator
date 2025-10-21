@@ -8,11 +8,17 @@ class RiskResult {
   final double ndj_p;
   final double ndj_t;
 
-  // Risk values
+  // Risk values (before protection)
   final double r1; // Risk of loss of human life
   final double r2; // Risk of loss of service to public
   final double r3; // Risk of loss of cultural heritage
   final double r4; // Risk of economic loss
+
+  // Risk values after protection measures
+  final double r1AfterProtection;
+  final double r2AfterProtection;
+  final double r3AfterProtection;
+  final double r4AfterProtection;
 
   // Tolerable risk thresholds
   final double tolerableR1;
@@ -24,9 +30,18 @@ class RiskResult {
   final bool protectionRequired;
   final String protectionLevel;
 
+  // Cost-Benefit Analysis
+  final double costOfLossBeforeProtection; // CL
+  final double costOfLossAfterProtection; // CRL
+  final double annualCostOfProtection; // CPM
+  final double annualSavings; // SM
+  final double totalCostOfStructure; // ctotal in million
+  final bool isProtectionEconomical;
+
   // Detailed risk components (for detailed analysis)
   final Map<String, double> riskComponents;
   final Map<String, double> collectionAreas;
+  final Map<String, double> riskComponentsAfterProtection;
 
   RiskResult({
     required this.nd,
@@ -40,14 +55,25 @@ class RiskResult {
     this.r2 = 0.0,
     this.r3 = 0.0,
     this.r4 = 0.0,
+    this.r1AfterProtection = 0.0,
+    this.r2AfterProtection = 0.0,
+    this.r3AfterProtection = 0.0,
+    this.r4AfterProtection = 0.0,
     this.tolerableR1 = 1.0e-5, // L1: loss of human life or permanent injury
     this.tolerableR2 = 1.0e-3, // L2: loss of service to the public
     this.tolerableR3 = 1.0e-4, // L3: loss of cultural heritage
     this.tolerableR4 = 1.0e-3, // L4: loss of economic value
     this.protectionRequired = false,
     this.protectionLevel = 'No protection required',
+    this.costOfLossBeforeProtection = 0.0,
+    this.costOfLossAfterProtection = 0.0,
+    this.annualCostOfProtection = 0.0,
+    this.annualSavings = 0.0,
+    this.totalCostOfStructure = 200.0,
+    this.isProtectionEconomical = false,
     this.riskComponents = const {},
     this.collectionAreas = const {},
+    this.riskComponentsAfterProtection = const {},
   });
 
   // Risk assessment summary
@@ -111,14 +137,25 @@ class RiskResult {
       'r2': r2,
       'r3': r3,
       'r4': r4,
+      'r1AfterProtection': r1AfterProtection,
+      'r2AfterProtection': r2AfterProtection,
+      'r3AfterProtection': r3AfterProtection,
+      'r4AfterProtection': r4AfterProtection,
       'tolerableR1': tolerableR1,
       'tolerableR2': tolerableR2,
       'tolerableR3': tolerableR3,
       'tolerableR4': tolerableR4,
       'protectionRequired': protectionRequired,
       'protectionLevel': protectionLevel,
+      'costOfLossBeforeProtection': costOfLossBeforeProtection,
+      'costOfLossAfterProtection': costOfLossAfterProtection,
+      'annualCostOfProtection': annualCostOfProtection,
+      'annualSavings': annualSavings,
+      'totalCostOfStructure': totalCostOfStructure,
+      'isProtectionEconomical': isProtectionEconomical,
       'riskComponents': riskComponents,
       'collectionAreas': collectionAreas,
+      'riskComponentsAfterProtection': riskComponentsAfterProtection,
     };
   }
 
@@ -135,14 +172,28 @@ class RiskResult {
       r2: map['r2']?.toDouble() ?? 0.0,
       r3: map['r3']?.toDouble() ?? 0.0,
       r4: map['r4']?.toDouble() ?? 0.0,
+      r1AfterProtection: map['r1AfterProtection']?.toDouble() ?? 0.0,
+      r2AfterProtection: map['r2AfterProtection']?.toDouble() ?? 0.0,
+      r3AfterProtection: map['r3AfterProtection']?.toDouble() ?? 0.0,
+      r4AfterProtection: map['r4AfterProtection']?.toDouble() ?? 0.0,
       tolerableR1: map['tolerableR1']?.toDouble() ?? 1e-5,
       tolerableR2: map['tolerableR2']?.toDouble() ?? 1e-3,
       tolerableR3: map['tolerableR3']?.toDouble() ?? 1e-4,
       tolerableR4: map['tolerableR4']?.toDouble() ?? 1e-3,
       protectionRequired: map['protectionRequired'] ?? false,
       protectionLevel: map['protectionLevel'] ?? 'No protection required',
+      costOfLossBeforeProtection:
+          map['costOfLossBeforeProtection']?.toDouble() ?? 0.0,
+      costOfLossAfterProtection:
+          map['costOfLossAfterProtection']?.toDouble() ?? 0.0,
+      annualCostOfProtection: map['annualCostOfProtection']?.toDouble() ?? 0.0,
+      annualSavings: map['annualSavings']?.toDouble() ?? 0.0,
+      totalCostOfStructure: map['totalCostOfStructure']?.toDouble() ?? 200.0,
+      isProtectionEconomical: map['isProtectionEconomical'] ?? false,
       riskComponents: Map<String, double>.from(map['riskComponents'] ?? {}),
       collectionAreas: Map<String, double>.from(map['collectionAreas'] ?? {}),
+      riskComponentsAfterProtection:
+          Map<String, double>.from(map['riskComponentsAfterProtection'] ?? {}),
     );
   }
 }

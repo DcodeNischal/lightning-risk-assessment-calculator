@@ -76,7 +76,7 @@ class ZoneParameters {
   final String cZ0;
   final double cZ1;
   final double ct;
-  final double X;
+  final double X; // Factor for hospital/special cases (0 or 1)
 
   // Zone Definitions fields
   final double totalZones;
@@ -167,7 +167,8 @@ class ZoneParameters {
     this.cZ0 = '10',
     this.cZ1 = 90.0,
     this.ct = 100.0,
-    this.X = 0.0,
+    this.X =
+        0.006, // Probability that internal system failure causes loss of life (0.6% for TZ=8760)
     this.totalZones = 2.0,
     this.personsZone0 = 0.0,
     this.personsZone1 = 30.0,
@@ -183,10 +184,55 @@ class ZoneParameters {
     this.powerLinePresent = true,
     this.telecomPresent = true,
   }) {
+    // Calculate zone-specific factors
+    double nz0 = personsZone0;
+    double nz1 = personsZone1;
+    double nt = totalPersons > 0 ? totalPersons : 30.0;
+    
+    // Time of presence per zone - USE the exposureTimeTZ parameter provided by user
+    // From IEC standard: can be 8760 (full year) or 3650 (work hours) or custom
+    double tz = exposureTimeTZ; // Use user-provided exposure time
+    
+    // Calculate potential factors
+    // np = (nz/nt) * (tz/8760)
+    double np0 = (nz0 / nt) * (tz / 8760.0);
+    double np1 = (nz1 / nt) * (tz / 8760.0);
+
+    // Cultural heritage factors
+    double cz0Val = double.tryParse(cZ0) ?? 10.0;
+    double cp0 = cz0Val / ct;
+    double cp1 = cZ1 / ct;
+
+    // Economic factors - parse from string or numeric values
+    // From IEC standard: ca=0, cb=75, cc=10, cs=15 (totaling 100)
+    double caVal = 0.0; // No animals by default
+    double cbVal = 75.0; // Building value by default
+    double ccVal = 10.0; // Content value by default
+    double csVal = 15.0; // Internal system value by default
+
+    // Try to parse string values if they contain numbers
+    if (ca != 'No' && ca.isNotEmpty) {
+      caVal = double.tryParse(ca) ?? 0.0;
+    }
+    if (cb != 'No' && cb.isNotEmpty) {
+      cbVal = double.tryParse(cb) ?? 75.0;
+    }
+    if (cc != 'No' && cc.isNotEmpty) {
+      ccVal = double.tryParse(cc) ?? 10.0;
+    }
+    if (cs != 'No' && cs.isNotEmpty) {
+      csVal = double.tryParse(cs) ?? 15.0;
+    }
+
+    double ap = caVal / ct; // Animals potential economic value (ca/ct)
+    double ip = csVal / ct; // Internal system potential economic value (cs/ct)
+    double sp = (caVal + cbVal + ccVal + csVal) /
+        ct; // Total structure potential economic value
+
     // Initialize zone parameters
     zoneParameters = {
       'zone0': {
-        'rt': 'Asphalt, linoleum, wood',
+        'rt': 'Agricultural, concrete',
         'PTA': 'No protection measures',
         'PTU': 'No protection measure',
         'rf': 'Fire(Ordinary)',
@@ -200,14 +246,18 @@ class ZoneParameters {
         'PSPD_telecom': 'No coordinated SPD system',
         'hz': 'No special risk',
         'LT': 'All types',
-        'LF1': 'Industrial structure, economically used plant',
+        'LF1': 'Hospital, Hotel, School, Public Building',
         'LO1': 'LO(Others)',
-        'np': 0.0, // Will be auto-calculated
+        'np': np0,
+        'cp': cp0,
+        'ap': ap,
+        'ip': ip,
+        'sp': sp,
         'LF2': 'LF(None)',
-        'LO2': 'TV, telecommunication(LO)',
+        'LO2': 'LO(None)',
         'LF3': 'None',
         'LT4': 'LT(None)',
-        'LF4': 'LF(None)',
+        'LF4': 'LF(Others)',
         'LO4':
             'hospital, industrial structure, office building, hotel, economically used plant',
       },
@@ -226,14 +276,19 @@ class ZoneParameters {
         'PSPD_telecom': 'No coordinated SPD system',
         'hz': 'No special risk',
         'LT': 'All types',
-        'LF1': 'Industrial structure, economically used plant',
+        'LF1': 'Hospital, Hotel, School, Public Building',
         'LO1': 'LO(Others)',
-        'np': 1.0, // Will be auto-calculated
-        'LF2': 'LF(None)',
-        'LO2': 'TV, telecommunication(LO)',
+        'np': np1,
+        'cp': cp1,
+        'ap': ap,
+        'ip': ip,
+        'sp': sp,
+        'LF2': 'TV, telecommunication',
+        'LO2': 'TV, telecommunication',
         'LF3': 'None',
-        'LT4': 'LT(None)',
-        'LF4': 'LF(None)',
+        'LT4': 'Others',
+        'LF4':
+            'hotel, school, office building, church, entertainment facility, economically used plant',
         'LO4':
             'hospital, industrial structure, office building, hotel, economically used plant',
       },

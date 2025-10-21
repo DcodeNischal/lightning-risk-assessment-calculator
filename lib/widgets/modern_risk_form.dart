@@ -447,6 +447,8 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
       // Environmental Influences and Structure Attributes
       'lightningFlashDensity': 15.0, // NG = 15
+      'constructionMaterial':
+          'Masonry, brick, concrete', // PS = 1.0 (most conservative)
       'lpsStatus': 'Structure is not Protected by an LPS', // PB = 1
       'meshWidth1': 0.0, // wm1 = 0
       'meshWidth2': 0.0, // wm2 = 0
@@ -486,18 +488,19 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
       // Economic Valuation
       'buildingType': 'Medium Scale Industry',
       'totalCostOfStructure': 'Medium Scale Industry',
-      'isAnyEconomicValue': 'No',
+      'isAnyEconomicValue': 'Yes',
       'isAnyValueofAnimals': 'No',
-      'ca': 'No',
-      'cb': 'No',
-      'cc': 'No',
-      'cs': 'No',
+      'ca': '0', // No animals (0%)
+      'cb': '75', // Building value (75%)
+      'cc': '10', // Content value (10%)
+      'cs': '15', // Internal systems value (15%)
 
       // Cultural Heritage Value
       'cZ0': '10', // 10%
       'cZ1': 90.0, // 90% (auto-calculated)
       'ct': 100.0, // Total value = 100
-      'X': 0.0, // For Hospital = 0
+      'X':
+          0.006, // Building-specific factor: 0.6% probability (for full year exposure TZ=8760)
       'powerLinePresent': 'Yes',
       'telecomPresent': 'Yes',
       'lifeSupportDevice': 'No',
@@ -507,6 +510,9 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
       'personsZone0': 0.0,
       'personsZone1': 30.0,
       'totalPersons': 30.0,
+
+      // Exposure Time
+      'exposureTimeTZ': 8760.0, // Default: Full year (use 3650 for work hours)
 
       // Zone Parameters
       'zoneParameters': {
@@ -552,10 +558,10 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
           'LT': 'All types',
           'LF1': 'Hospital, Hotel, School, Public Building',
           'LO1': 'LO(Others)',
-          'LF2': 'TV, telecommunication(LF)',
-          'LO2': 'TV, telecommunication(LO)',
+          'LF2': 'TV, telecommunication',
+          'LO2': 'TV, telecommunication',
           'LF3': 'None',
-          'LT4': 'LT(None)',
+          'LT4': 'Others',
           'LF4':
               'hotel, school, office building, church, entertainment facility, economically used plant',
           'LO4':
@@ -707,6 +713,17 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                   ),
                   const SizedBox(height: 16),
                   _buildNumberField('Height (m)', 'height', Icons.height),
+                  const SizedBox(height: 16),
+                  _buildDropdownField(
+                    'Construction Material (Type of Structure)',
+                    'constructionMaterial',
+                    Icons.construction,
+                    [
+                      'Masonry, brick, concrete',
+                      'Metal',
+                      'Wood, reinforced concrete',
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   _buildBooleanDropdownField('Is it a Complex Structure?',
                       'isComplexStructure', Icons.business_center),
@@ -1202,6 +1219,48 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                 Icons.location_on,
                 Colors.teal,
                 [
+                  // Exposure Time Input
+                  DropdownButtonFormField<double>(
+                    value: _formData['exposureTimeTZ']?.toDouble() ?? 8760.0,
+                    decoration: InputDecoration(
+                      labelText: 'Exposure Time (TZ) - Hours per Year',
+                      prefixIcon: Icon(Icons.access_time),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[50],
+                      helperText: 'Select based on building occupancy',
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 8760.0,
+                        child: Text(
+                            '8760 hours (Full Year - Residential, Hotels, 24/7 Facilities)'),
+                      ),
+                      DropdownMenuItem(
+                        value: 3650.0,
+                        child: Text(
+                            '3650 hours (Work Hours - Offices, Schools, Commercial)'),
+                      ),
+                      DropdownMenuItem(
+                        value: 2000.0,
+                        child: Text(
+                            '2000 hours (Limited Hours - Seasonal, Part-time)'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _formData['exposureTimeTZ'] = value ?? 8760.0;
+                        _calculateRiskParameters();
+                      });
+                    },
+                    onSaved: (value) {
+                      _formData['exposureTimeTZ'] = value ?? 8760.0;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
                   TextFormField(
                     initialValue: _formData['totalZones']?.toString() ?? '2',
                     decoration: InputDecoration(
