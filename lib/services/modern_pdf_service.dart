@@ -158,9 +158,27 @@ class ModernPDFService {
           _buildParamRow(
               '*highest point measured from the ground level', '', '',
               isNote: true),
-          _buildParamRow('Is it a Complex Structure ?', '', 'No'),
-          _buildParamRow('Collection Area (m²)', 'AD',
+          _buildParamRow('Is it a Complex Structure ?', '',
+              zoneParams.isComplexStructure ? 'Yes' : 'No'),
+          pw.SizedBox(height: 3),
+          _buildSectionDivider('Collection Areas (m²)'),
+          _buildParamRow('Collection Area (Direct strikes)', 'AD',
               (riskResult.collectionAreas['AD'] ?? 0).toStringAsFixed(2)),
+          _buildParamRow('Collection Area (Nearby strikes)', 'AM',
+              (riskResult.collectionAreas['AM'] ?? 0).toStringAsFixed(2)),
+          _buildParamRow('Collection Area (Power line - direct)', 'AL(P)',
+              (riskResult.collectionAreas['ALP'] ?? 0).toStringAsFixed(2)),
+          _buildParamRow('Collection Area (Telecom line - direct)', 'AL(T)',
+              (riskResult.collectionAreas['ALT'] ?? 0).toStringAsFixed(2)),
+          _buildParamRow('Collection Area (Power line - indirect)', 'AI(P)',
+              (riskResult.collectionAreas['AIP'] ?? 0).toStringAsFixed(2)),
+          _buildParamRow('Collection Area (Telecom line - indirect)', 'AI(T)',
+              (riskResult.collectionAreas['AIT'] ?? 0).toStringAsFixed(2)),
+          _buildParamRow('Collection Area (Adjacent - Power)', 'ADJ(P)',
+              (riskResult.collectionAreas['ADJP'] ?? 0).toStringAsFixed(2)),
+          _buildParamRow('Collection Area (Adjacent - Telecom)', 'ADJ(T)',
+              (riskResult.collectionAreas['ADJT'] ?? 0).toStringAsFixed(2)),
+          pw.SizedBox(height: 3),
           _buildSectionDivider('Adjacent Structure Dimensions (If Any)'),
           _buildParamRow('Adjacent Structure Length (m)', 'LDJ',
               zoneParams.adjLength.toString()),
@@ -168,7 +186,8 @@ class ModernPDFService {
               zoneParams.adjWidth.toString()),
           _buildParamRow('Adjacent Structure Height (m)', 'HDJ',
               zoneParams.adjHeight.toString()),
-          _buildParamRow('Collection Area of Adjacent Structure', 'ADJ', 'N/A'),
+          _buildParamRow('Collection Area of Adjacent Structure', 'ADJ',
+              zoneParams.collectionAreaADJ.toStringAsFixed(2)),
         ],
       ),
     );
@@ -195,9 +214,10 @@ class ModernPDFService {
               'Equipotential Bonding', 'PEB', zoneParams.equipotentialBonding),
           _buildParamRow('Location Factor of Adjacent Structure', 'CDJ',
               zoneParams.adjLocationFactor),
-          _buildParamRow(
-              'Does this Building provide services to the public ?', '', 'No'),
-          _buildParamRow('Does this building have cultural value ?', '', 'No'),
+          _buildParamRow('Does this Building provide services to the public ?',
+              '', zoneParams.buildingProvidesServices ? 'Yes' : 'No'),
+          _buildParamRow('Does this building have cultural value ?', '',
+              zoneParams.buildingHasCulturalValue ? 'Yes' : 'No'),
         ],
       ),
     );
@@ -227,8 +247,8 @@ class ModernPDFService {
           _buildParamRow('Line Shielding', 'PLD', zoneParams.powerShielding),
           _buildParamRow(
               'Shielding Near Line', 'PLI', zoneParams.powerUW.toString()),
-          _buildParamRow(
-              'Impulse withstand voltage (resistibility)', 'KS4', '0.667'),
+          _buildParamRow('Impulse withstand voltage (resistibility)', 'KS4',
+              zoneParams.powerKS4.toString()),
           _buildParamRow(
               'Internal wiring:  Routing and Shielding',
               'KS3',
@@ -263,8 +283,8 @@ class ModernPDFService {
           _buildParamRow('Line Shielding', 'PLD', zoneParams.tlcShielding),
           _buildParamRow(
               'Shielding Near Line', 'PLI', zoneParams.tlcUW.toString()),
-          _buildParamRow(
-              'Impulse withstand voltage (resistibility)', 'KS4', '0.667'),
+          _buildParamRow('Impulse withstand voltage (resistibility)', 'KS4',
+              zoneParams.tlcKS4.toString()),
           _buildParamRow(
               'Internal wiring:  Routing and Shielding',
               'KS3',
@@ -420,6 +440,23 @@ class ModernPDFService {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
+          _buildSectionDivider('Dangerous Events'),
+          _buildParamRow('Direct strikes to structure', 'ND',
+              riskResult.nd.toStringAsFixed(4)),
+          _buildParamRow('Nearby strikes to structure', 'NM',
+              riskResult.nm.toStringAsFixed(4)),
+          _buildParamRow('Direct strikes to power line', 'NL(P)',
+              riskResult.nl_p.toStringAsFixed(4)),
+          _buildParamRow('Direct strikes to telecom line', 'NL(T)',
+              riskResult.nl_t.toStringAsFixed(4)),
+          _buildParamRow('Indirect strikes to both lines', 'NI',
+              riskResult.ni.toStringAsFixed(4)),
+          _buildParamRow('Direct strikes to adjacent (Power)', 'NDJ(P)',
+              riskResult.ndj_p.toStringAsFixed(4)),
+          _buildParamRow('Direct strikes to adjacent (Telecom)', 'NDJ(T)',
+              riskResult.ndj_t.toStringAsFixed(4)),
+          pw.SizedBox(height: 5),
+          _buildSectionDivider('Risk Values'),
           _buildParamRow('Loss of Human Life', 'R1',
               riskResult.r1.toStringAsExponential(2)),
           _buildParamRow(
@@ -440,6 +477,16 @@ class ModernPDFService {
               riskResult.r4 == 0
                   ? 'Economic Value Not Evaluated'
                   : riskResult.r4.toStringAsExponential(2)),
+          pw.SizedBox(height: 5),
+          _buildSectionDivider('Tolerable Risk Thresholds'),
+          _buildParamRow('Tolerable Risk for R1', 'RT1',
+              riskResult.tolerableR1.toStringAsExponential(0)),
+          _buildParamRow('Tolerable Risk for R2', 'RT2',
+              riskResult.tolerableR2.toStringAsExponential(0)),
+          _buildParamRow('Tolerable Risk for R3', 'RT3',
+              riskResult.tolerableR3.toStringAsExponential(0)),
+          _buildParamRow('Tolerable Risk for R4', 'RT4',
+              riskResult.tolerableR4.toStringAsExponential(0)),
         ],
       ),
     );
@@ -530,19 +577,79 @@ class ModernPDFService {
     // Get Zone 1 parameters for coordinated SPD
     Map<String, dynamic> zone1 = zoneParams.zoneParameters['zone1'] ?? {};
 
+    // Extract protection class from LPS status (e.g., "Class II" from "Structure is Protected by an LPS Class II")
+    String lpsClass = zoneParams.lpsStatus;
+    if (lpsClass.contains('Class')) {
+      // Extract just the class part (e.g., "II", "I", "III", "IV")
+      final match = RegExp(r'Class\s+(I{1,3}|IV)').firstMatch(lpsClass);
+      if (match != null) {
+        lpsClass = 'Structure is Protected by an LPS Class (${match.group(1)})';
+      }
+    }
+
+    // Extract SPD protection level
+    String spdPower =
+        zone1['PSPD_power']?.toString() ?? 'No coordinated SPD system';
+    String spdTelecom =
+        zone1['PSPD_telecom']?.toString() ?? 'No coordinated SPD system';
+
+    // If SPD contains "Coordinated", extract the level
+    if (spdPower.toLowerCase().contains('coordinated')) {
+      final match = RegExp(r'(I{1,3}|IV)').firstMatch(spdPower);
+      if (match != null) {
+        spdPower = match.group(1) ?? spdPower;
+      }
+    }
+    if (spdTelecom.toLowerCase().contains('coordinated')) {
+      final match = RegExp(r'(I{1,3}|IV)').firstMatch(spdTelecom);
+      if (match != null) {
+        spdTelecom = match.group(1) ?? spdTelecom;
+      }
+    }
+
+    // Extract equipotential bonding level
+    String peb = zoneParams.equipotentialBonding;
+    if (peb.toLowerCase().contains('yes') ||
+        peb.toLowerCase().contains('coordinated')) {
+      final match = RegExp(r'(I{1,3}|IV)').firstMatch(peb);
+      if (match != null) {
+        peb = match.group(1) ?? peb;
+      }
+    }
+
+    // Determine if protection is required
+    final isProtectionRequired = riskResult.r1 > riskResult.tolerableR1;
+
     return pw.Padding(
       padding: const pw.EdgeInsets.all(2),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildParamRow('Protection Measure (Physical Damage)', 'PB',
-              zoneParams.lpsStatus),
-          _buildParamRow('Protection Measure (Lightning Equipotential Bonding)',
-              'PEB', zoneParams.equipotentialBonding),
-          _buildParamRow('Coordinated Surge Protection (Power)', 'PSPD(P)',
-              zone1['PSPD_power']?.toString() ?? 'No coordinated SPD system'),
-          _buildParamRow('Coordinated Surge Protection (Telecom)', 'PSPD(T)',
-              zone1['PSPD_telecom']?.toString() ?? 'No coordinated SPD system'),
+          _buildSectionDivider('Protection Assessment'),
+          _buildParamRow(
+              'Is Protection Required?',
+              '',
+              isProtectionRequired ? 'YES' : 'NO',
+              valueColor: isProtectionRequired ? PdfColors.red : PdfColors.green,
+              backgroundColor: isProtectionRequired ? PdfColors.red50 : PdfColors.green50),
+          _buildParamRow(
+              'Recommended Protection Level',
+              '',
+              riskResult.protectionLevel,
+              valueColor: PdfColors.blue800,
+              backgroundColor: PdfColors.blue50),
+          pw.SizedBox(height: 8),
+          _buildSectionDivider('Current Protection Measures'),
+          _buildParamRow(
+              'Protection Measure (Physical Damage)', 'PB', lpsClass),
+          _buildParamRow(
+              'Protection Measure (Lightning Equipotential Bonding) ',
+              'PEB',
+              peb),
+          _buildParamRow(
+              'Coordinated Surge Protection (Power)', 'PSPD(P)', spdPower),
+          _buildParamRow(
+              'Coordinated Surge Protection (Telecom)', 'PSPD(T)', spdTelecom),
         ],
       ),
     );
@@ -576,7 +683,12 @@ class ModernPDFService {
                   : riskResult.r4AfterProtection.toStringAsExponential(2)),
           pw.SizedBox(height: 5),
           _buildSectionDivider('Annual Savings [ SM= CL- ( CPM+CRL ) ]'),
-          _buildParamRow('Investment on Protective measures is', '', 'N/A'),
+          _buildParamRow(
+              'Investment on Protective measures is',
+              '',
+              riskResult.isProtectionEconomical
+                  ? 'Economical'
+                  : 'Not Economical'),
         ],
       ),
     );
