@@ -130,7 +130,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
   void _calculateRiskParameters() {
     // Calculate R1: Loss of Human Life
-    double r1 = _calculateR1();
+    String r1 = _calculateR1();
     _formData['R1'] = r1;
 
     // Calculate R2: Loss of Public Service
@@ -156,25 +156,24 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
     }
   }
 
-  double _calculateR1() {
-    // Return the expected value from your sample data table
-    // R1 = 2.97E-04 (Loss of Human Life)
-    return 2.97e-4;
+  String _calculateR1() {
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   String _calculateR2() {
-    // Return the expected value from your sample data table
-    return 'No Loss of Public Service';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   String _calculateR3() {
-    // Return the expected value from your sample data table
-    return 'No Loss of Cultural Heritage Value';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   String _calculateR4() {
-    // Return the expected value from your sample data table
-    return 'Economic Value Not Evaluated';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   void _calculateProtectionMeasures() {
@@ -202,7 +201,12 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
   String _calculatePB() {
     // Determine LPS class based on risk level and structure type
-    double r1 = _formData['R1']?.toDouble() ?? 0.0;
+    // Skip calculation if R1 is not yet calculated
+    dynamic r1Value = _formData['R1'];
+    if (r1Value is String) {
+      return 'Structure is Protected by an LPS Class (IV)'; // Default
+    }
+    double r1 = r1Value?.toDouble() ?? 0.0;
 
     if (r1 > 1e-4) {
       return 'Structure is Protected by an LPS Class I';
@@ -217,7 +221,12 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
   String _calculatePEB() {
     // Determine equipotential bonding level based on risk
-    double r1 = _formData['R1']?.toDouble() ?? 0.0;
+    // Skip calculation if R1 is not yet calculated
+    dynamic r1Value = _formData['R1'];
+    if (r1Value is String) {
+      return 'III-IV'; // Default
+    }
+    double r1 = r1Value?.toDouble() ?? 0.0;
 
     if (r1 > 1e-4) {
       return 'I';
@@ -232,7 +241,12 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
   String _calculatePSPDPower() {
     // Determine power surge protection based on risk and existing protection
-    double r1 = _formData['R1']?.toDouble() ?? 0.0;
+    // Skip calculation if R1 is not yet calculated
+    dynamic r1Value = _formData['R1'];
+    if (r1Value is String) {
+      return 'No coordinated SPD system'; // Default
+    }
+    double r1 = r1Value?.toDouble() ?? 0.0;
     String pb = _formData['PB']?.toString() ?? '';
 
     if (r1 > 1e-5 && pb.contains('Class I')) {
@@ -248,7 +262,12 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
   String _calculatePSPDTelecom() {
     // Determine telecom surge protection based on risk and existing protection
-    double r1 = _formData['R1']?.toDouble() ?? 0.0;
+    // Skip calculation if R1 is not yet calculated
+    dynamic r1Value = _formData['R1'];
+    if (r1Value is String) {
+      return 'No coordinated SPD system'; // Default
+    }
+    double r1 = r1Value?.toDouble() ?? 0.0;
     String pb = _formData['PB']?.toString() ?? '';
 
     if (r1 > 1e-5 && pb.contains('Class I')) {
@@ -264,7 +283,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
   void _calculatePostProtectionRisks() {
     // Calculate R1 after protection
-    double r1Post = _calculateR1PostProtection();
+    String r1Post = _calculateR1PostProtection();
     _formData['R1_post'] = r1Post;
 
     // Calculate R2 after protection
@@ -300,61 +319,36 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
     }
   }
 
-  double _calculateR1PostProtection() {
-    // Calculate R1 after protection measures are applied
-    double r1Original = _formData['R1']?.toDouble() ?? 0.0;
-
-    // Simplified post-protection calculation
-    // This would typically be based on actual protection measures implemented
-    double reductionFactor = 0.1; // 90% reduction as example
-
-    return r1Original * reductionFactor;
+  String _calculateR1PostProtection() {
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   String _calculateR2PostProtection() {
-    // R2 typically doesn't change much with protection measures
-    return _formData['R2']?.toString() ?? 'No Loss of Public Service';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   String _calculateR3PostProtection() {
-    // R3 typically doesn't change much with protection measures
-    return _formData['R3']?.toString() ?? 'No Loss of Cultural Heritage Value';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   String _calculateR4PostProtection() {
-    // R4 typically doesn't change much with protection measures
-    return _formData['R4']?.toString() ?? 'Economic Value Not Evaluated';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    return 'Click Calculate Below';
   }
 
   String _calculateAnnualSavingsFormula() {
-    // Calculate annual savings based on risk reduction
-    double r1Original = _formData['R1']?.toDouble() ?? 0.0;
-    double r1Post = _formData['R1_post']?.toDouble() ?? 0.0;
-
-    if (r1Original > 0) {
-      double riskReduction = (r1Original - r1Post) / r1Original;
-      double savings = riskReduction * 1000000; // Simplified calculation
-      return 'SM = \$${savings.toStringAsFixed(0)} (Risk reduction: ${(riskReduction * 100).toStringAsFixed(1)}%)';
-    }
-
-    return 'SM = N/A (No significant risk reduction)';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    // Proper formula: SM = CL - (CPM + CRL)
+    return 'Click Calculate Below';
   }
 
   String _calculateInvestment() {
-    // Calculate investment based on protection level
-    String pb = _formData['PB']?.toString() ?? '';
-
-    if (pb.contains('Class I')) {
-      return 'High Investment Required (\$50,000+)';
-    } else if (pb.contains('Class II')) {
-      return 'Medium-High Investment Required (\$25,000-50,000)';
-    } else if (pb.contains('Class III')) {
-      return 'Medium Investment Required (\$10,000-25,000)';
-    } else if (pb.contains('Class IV')) {
-      return 'Low-Medium Investment Required (\$5,000-10,000)';
-    }
-
-    return 'N/A';
+    // Placeholder - actual value calculated after clicking "Calculate Risk Assessment"
+    // Based on: SM > 0 ? "Economical" : "Not Economical"
+    return 'Click Calculate Below';
   }
 
   void _calculateAnimalValues() {
@@ -514,6 +508,13 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
       // Exposure Time
       'exposureTimeTZ': 8760.0, // Default: Full year (use 3650 for work hours)
 
+      // Cost-Benefit Analysis Parameters (Professor's validated values)
+      'buildingCostMillions': 200.0, // Total cost of structure in millions
+      'protectionCostMillions': 4.0, // Cost of protective measures in millions
+      'interestRate': 0.12, // 12% interest rate
+      'amortizationRate': 0.05, // 5% amortization rate
+      'maintenanceRate': 0.03, // 3% maintenance rate
+
       // Zone Parameters
       'zoneParameters': {
         'zone0': {
@@ -570,11 +571,11 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
         },
       },
 
-      // Calculated Risk Parameters (pre-filled with expected values)
-      'R1': 2.97e-4, // Loss of Human Life
-      'R2': 'No Loss of Public Service',
-      'R3': 'No Loss of Cultural Heritage Value',
-      'R4': 'Economic Value Not Evaluated',
+      // Calculated Risk Parameters (will be calculated after submission)
+      'R1': 'Click Calculate Below',
+      'R2': 'Click Calculate Below',
+      'R3': 'Click Calculate Below',
+      'R4': 'Click Calculate Below',
 
       // Required Level Of Protection
       'PB': 'Structure is Protected by an LPS Class (IV)',
@@ -583,14 +584,14 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
       'PSPD_T': 'No coordinated SPD system',
 
       // Calculated Risk after Protection Level Consideration
-      'R1_post': 2.18e-5,
-      'R2_post': 'No Loss of Public Service',
-      'R3_post': 'No Loss of Cultural Heritage Value',
-      'R4_post': 'Economic Value Not Evaluated',
+      'R1_post': 'Click Calculate Below',
+      'R2_post': 'Click Calculate Below',
+      'R3_post': 'Click Calculate Below',
+      'R4_post': 'Click Calculate Below',
 
       // Annual Savings
-      'investment': 'N/A',
-      'annualSavings': 'N/A',
+      'investment': 'Click Calculate Below',
+      'annualSavings': 'Click Calculate Below',
     };
 
     // Calculate initial values after a short delay to ensure all data is loaded - Fixed dropdown values
@@ -1388,6 +1389,66 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
 
               const SizedBox(height: 16),
 
+              // Cost-Benefit Analysis Input Section
+              _buildModernSection(
+                'Cost-Benefit Analysis Parameters',
+                Icons.account_balance_wallet,
+                Colors.amber[700]!,
+                [
+                  const Text(
+                    'Enter the costs for economic analysis (in millions USD/NPR):',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildNumberField(
+                    'Total Cost of Building (millions)',
+                    'buildingCostMillions',
+                    Icons.home_work,
+                    min: 0.1,
+                    max: 10000.0,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildNumberField(
+                    'Cost of Protection Measures (millions)',
+                    'protectionCostMillions',
+                    Icons.security,
+                    min: 0.1,
+                    max: 1000.0,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Financial Rates (as decimals, e.g., 0.12 for 12%):',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildNumberField(
+                    'Interest Rate (i)',
+                    'interestRate',
+                    Icons.percent,
+                    min: 0.0,
+                    max: 1.0,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildNumberField(
+                    'Amortization Rate (a)',
+                    'amortizationRate',
+                    Icons.trending_down,
+                    min: 0.0,
+                    max: 1.0,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildNumberField(
+                    'Maintenance Rate (m)',
+                    'maintenanceRate',
+                    Icons.build,
+                    min: 0.0,
+                    max: 1.0,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
               // Calculated Risk Parameters Section
               _buildModernSection(
                 'Calculated Risk Parameters',
@@ -1406,7 +1467,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                     'Loss of Public Service (R2)',
                     'R2',
                     Icons.public,
-                    'Auto-calculated based on zone parameters',
+                    'Will be calculated after clicking "Calculate Risk Assessment" button',
                     isScientific: false,
                   ),
                   const SizedBox(height: 16),
@@ -1414,7 +1475,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                     'Loss of Cultural Heritage (R3)',
                     'R3',
                     Icons.museum,
-                    'Auto-calculated based on cultural value',
+                    'Will be calculated after clicking "Calculate Risk Assessment" button',
                     isScientific: false,
                   ),
                   const SizedBox(height: 16),
@@ -1422,7 +1483,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                     'Economic Loss (R4)',
                     'R4',
                     Icons.attach_money,
-                    'Auto-calculated based on economic parameters',
+                    'Will be calculated after clicking "Calculate Risk Assessment" button',
                     isScientific: false,
                   ),
                 ],
@@ -1490,7 +1551,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                     'Loss of Public Service (R2)',
                     'R2_post',
                     Icons.public,
-                    'Risk after protection measures applied',
+                    'Will be calculated after clicking "Calculate Risk Assessment" button',
                     isScientific: false,
                   ),
                   const SizedBox(height: 16),
@@ -1498,7 +1559,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                     'Loss of Cultural Heritage (R3)',
                     'R3_post',
                     Icons.museum,
-                    'Risk after protection measures applied',
+                    'Will be calculated after clicking "Calculate Risk Assessment" button',
                     isScientific: false,
                   ),
                   const SizedBox(height: 16),
@@ -1506,7 +1567,7 @@ class _ModernRiskFormState extends State<ModernRiskForm> {
                     'Economic Loss (R4)',
                     'R4_post',
                     Icons.attach_money,
-                    'Risk after protection measures applied',
+                    'Will be calculated after clicking "Calculate Risk Assessment" button',
                     isScientific: false,
                   ),
                 ],

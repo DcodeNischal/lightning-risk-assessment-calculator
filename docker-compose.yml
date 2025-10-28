@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: aegisflash-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aegisflash_db
+      POSTGRES_USER: aegisflash_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aegisflash-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegisflash_user -d aegisflash_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: aegisflash-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DATABASE_URL: postgresql://aegisflash_user:${DB_PASSWORD:-secure_password}@postgres:5432/aegisflash_db
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: aegisflash_db
+      DB_USER: aegisflash_user
+      DB_PASSWORD: ${DB_PASSWORD:-secure_password}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_EXPIRE: 15m
+      JWT_REFRESH_EXPIRE: 7d
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      EMAIL_FROM: ${EMAIL_FROM}
+      FRONTEND_URL: http://localhost:3000
+      BCRYPT_ROUNDS: 12
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - aegisflash-network
+    volumes:
+      - ./backend/logs:/app/logs
+
+  # Frontend (React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aegisflash-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+      VITE_APP_NAME: Aegisflash Assessment System
+    depends_on:
+      - backend
+    networks:
+      - aegisflash-network
+
+networks:
+  aegisflash-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+

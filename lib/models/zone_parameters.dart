@@ -98,6 +98,13 @@ class ZoneParameters {
   final String lifeSupportDevice; // Yes/No
   final bool powerLinePresent; // derived or explicit flag
   final bool telecomPresent; // derived or explicit flag
+  
+  // Cost-Benefit Analysis inputs (in million USD/NPR)
+  final double buildingCostMillions; // ctotal - Total cost of structure
+  final double protectionCostMillions; // CP - Cost of protective measures
+  final double interestRate; // i - Interest rate (default 0.12)
+  final double amortizationRate; // a - Amortization rate (default 0.05)
+  final double maintenanceRate; // m - Maintenance rate (default 0.03)
 
   ZoneParameters({
     required this.length,
@@ -183,6 +190,11 @@ class ZoneParameters {
     this.lifeSupportDevice = 'No',
     this.powerLinePresent = true,
     this.telecomPresent = true,
+    this.buildingCostMillions = 200.0, // Default: 200 million (as per professor)
+    this.protectionCostMillions = 4.0, // Default: 4 million (as per professor)
+    this.interestRate = 0.12, // Default: 12% (as per professor)
+    this.amortizationRate = 0.05, // Default: 5% (as per professor)
+    this.maintenanceRate = 0.03, // Default: 3% (as per professor)
   }) {
     // Calculate zone-specific factors
     double nz0 = personsZone0;
@@ -386,6 +398,11 @@ class ZoneParameters {
           map['powerLinePresent'] == 'Yes' || map['powerLinePresent'] == true,
       telecomPresent:
           map['telecomPresent'] == 'Yes' || map['telecomPresent'] == true,
+      buildingCostMillions: map['buildingCostMillions']?.toDouble() ?? 200.0,
+      protectionCostMillions: map['protectionCostMillions']?.toDouble() ?? 4.0,
+      interestRate: map['interestRate']?.toDouble() ?? 0.12,
+      amortizationRate: map['amortizationRate']?.toDouble() ?? 0.05,
+      maintenanceRate: map['maintenanceRate']?.toDouble() ?? 0.03,
     );
   }
 
@@ -471,6 +488,11 @@ class ZoneParameters {
       'lifeSupportDevice': lifeSupportDevice,
       'powerLinePresent': powerLinePresent ? 'Yes' : 'No',
       'telecomPresent': telecomPresent ? 'Yes' : 'No',
+      'buildingCostMillions': buildingCostMillions,
+      'protectionCostMillions': protectionCostMillions,
+      'interestRate': interestRate,
+      'amortizationRate': amortizationRate,
+      'maintenanceRate': maintenanceRate,
     };
   }
 }

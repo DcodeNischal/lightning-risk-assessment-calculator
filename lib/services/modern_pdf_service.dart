@@ -304,6 +304,18 @@ class ModernPDFService {
           _buildParamRow('Total cost of Structure (Building Type)', '',
               zoneParams.totalCostOfStructure),
           pw.SizedBox(height: 3),
+          _buildSectionDivider('Cost-Benefit Input Parameters'),
+          _buildParamRow('Building Cost', '',
+              '\$${zoneParams.buildingCostMillions.toStringAsFixed(2)} Million'),
+          _buildParamRow('Protection Cost', '',
+              '\$${zoneParams.protectionCostMillions.toStringAsFixed(2)} Million'),
+          _buildParamRow('Interest Rate', 'i',
+              '${(zoneParams.interestRate * 100).toStringAsFixed(2)}%'),
+          _buildParamRow('Amortization Rate', 'a',
+              '${(zoneParams.amortizationRate * 100).toStringAsFixed(2)}%'),
+          _buildParamRow('Maintenance Rate', 'm',
+              '${(zoneParams.maintenanceRate * 100).toStringAsFixed(2)}%'),
+          pw.SizedBox(height: 3),
           _buildSectionDivider('Economic Value'),
           _buildParamRow(
               'Is There any Economic Value', '', zoneParams.isAnyEconomicValue),
@@ -459,24 +471,12 @@ class ModernPDFService {
           _buildSectionDivider('Risk Values'),
           _buildParamRow('Loss of Human Life', 'R1',
               riskResult.r1.toStringAsExponential(2)),
+          _buildParamRow('Loss of Public Service', 'R2',
+              riskResult.r2.toStringAsExponential(2)),
+          _buildParamRow('Loss of Cultural Heritage', 'R3',
+              riskResult.r3.toStringAsExponential(2)),
           _buildParamRow(
-              'Loss of Public Service',
-              'R2',
-              riskResult.r2 == 0
-                  ? 'No Loss of Public Service'
-                  : riskResult.r2.toStringAsExponential(2)),
-          _buildParamRow(
-              'Loss of Cultural Heritage',
-              'R3',
-              riskResult.r3 == 0
-                  ? 'No Loss of Cultural Heritage Value'
-                  : riskResult.r3.toStringAsExponential(2)),
-          _buildParamRow(
-              'Economic Loss',
-              'R4',
-              riskResult.r4 == 0
-                  ? 'Economic Value Not Evaluated'
-                  : riskResult.r4.toStringAsExponential(2)),
+              'Economic Loss', 'R4', riskResult.r4.toStringAsExponential(2)),
           pw.SizedBox(height: 5),
           _buildSectionDivider('Tolerable Risk Thresholds'),
           _buildParamRow('Tolerable Risk for R1', 'RT1',
@@ -626,18 +626,15 @@ class ModernPDFService {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionDivider('Protection Assessment'),
-          _buildParamRow(
-              'Is Protection Required?',
-              '',
+          _buildParamRow('Is Protection Required?', '',
               isProtectionRequired ? 'YES' : 'NO',
-              valueColor: isProtectionRequired ? PdfColors.red : PdfColors.green,
-              backgroundColor: isProtectionRequired ? PdfColors.red50 : PdfColors.green50),
+              valueColor:
+                  isProtectionRequired ? PdfColors.red : PdfColors.green,
+              backgroundColor:
+                  isProtectionRequired ? PdfColors.red50 : PdfColors.green50),
           _buildParamRow(
-              'Recommended Protection Level',
-              '',
-              riskResult.protectionLevel,
-              valueColor: PdfColors.blue800,
-              backgroundColor: PdfColors.blue50),
+              'Recommended Protection Level', '', riskResult.protectionLevel,
+              valueColor: PdfColors.blue800, backgroundColor: PdfColors.blue50),
           pw.SizedBox(height: 8),
           _buildSectionDivider('Current Protection Measures'),
           _buildParamRow(
@@ -663,32 +660,39 @@ class ModernPDFService {
         children: [
           _buildParamRow('Loss of Human Life', 'R1',
               riskResult.r1AfterProtection.toStringAsExponential(2)),
-          _buildParamRow(
-              'Loss of Public Service',
-              'R2',
-              riskResult.r2AfterProtection == 0
-                  ? 'No Loss of Public Service'
-                  : riskResult.r2AfterProtection.toStringAsExponential(2)),
-          _buildParamRow(
-              'Loss of Cultural Heritage',
-              'R3',
-              riskResult.r3AfterProtection == 0
-                  ? 'No Loss of Cultural Heritage Value'
-                  : riskResult.r3AfterProtection.toStringAsExponential(2)),
-          _buildParamRow(
-              'Economic Loss',
-              'R4',
-              riskResult.r4AfterProtection == 0
-                  ? 'Economic Value Not Evaluated'
-                  : riskResult.r4AfterProtection.toStringAsExponential(2)),
+          _buildParamRow('Loss of Public Service', 'R2',
+              riskResult.r2AfterProtection.toStringAsExponential(2)),
+          _buildParamRow('Loss of Cultural Heritage', 'R3',
+              riskResult.r3AfterProtection.toStringAsExponential(2)),
+          _buildParamRow('Economic Loss', 'R4',
+              riskResult.r4AfterProtection.toStringAsExponential(2)),
           pw.SizedBox(height: 5),
-          _buildSectionDivider('Annual Savings [ SM= CL- ( CPM+CRL ) ]'),
+          _buildSectionDivider('Cost-Benefit Analysis (in Million \$)'),
+          _buildParamRow('Total Cost of Structure', 'C',
+              '\$${riskResult.totalCostOfStructure.toStringAsFixed(2)} M'),
+          _buildParamRow('Cost of Loss Before Protection', 'CL',
+              '\$${riskResult.costOfLossBeforeProtection.toStringAsFixed(4)} M/year'),
+          _buildParamRow('Cost of Loss After Protection', 'CRL',
+              '\$${riskResult.costOfLossAfterProtection.toStringAsFixed(4)} M/year'),
+          _buildParamRow('Annual Cost of Protection', 'CPM',
+              '\$${riskResult.annualCostOfProtection.toStringAsFixed(4)} M/year'),
+          _buildParamRow('Annual Savings', 'SM',
+              '\$${riskResult.annualSavings.toStringAsFixed(4)} M/year',
+              valueColor: riskResult.annualSavings > 0
+                  ? PdfColors.green800
+                  : PdfColors.red800),
           _buildParamRow(
-              'Investment on Protective measures is',
+              'Protection Investment',
               '',
               riskResult.isProtectionEconomical
-                  ? 'Economical'
-                  : 'Not Economical'),
+                  ? 'ECONOMICAL'
+                  : 'NOT ECONOMICAL',
+              valueColor: riskResult.isProtectionEconomical
+                  ? PdfColors.green800
+                  : PdfColors.red800,
+              backgroundColor: riskResult.isProtectionEconomical
+                  ? PdfColors.green50
+                  : PdfColors.red50),
         ],
       ),
     );

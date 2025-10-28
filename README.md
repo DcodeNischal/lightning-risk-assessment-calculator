@@ -307,7 +307,7 @@ Contributions are welcome! Please follow these guidelines:
 - 📄 PDF report generation
 - 📱 Mobile and desktop support
 
-## 🐛 Known Issues
+## � Known Issues
 
 - R2, R3, R4 calculations are placeholders (planned for v2.1)
 - Multi-zone assessment not yet implemented (planned for v2.2)
@@ -319,7 +319,7 @@ For support, questions, or feature requests:
 - 🐛 Issues: [GitHub Issues](https://github.com/yourusername/lightning-risk-assessment-calculator/issues)
 - 📖 Documentation: [Wiki](https://github.com/yourusername/lightning-risk-assessment-calculator/wiki)
 
-## 📜 License
+## � License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
